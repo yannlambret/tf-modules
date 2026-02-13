@@ -1,0 +1,16 @@
+version: 2
+ethernets:
+  interface:
+    match:
+      name: "e*"
+    dhcp4: false
+    addresses:
+      - ${ipv4_address}/${cidr_prefix}
+    routes:
+      - to: default
+        via: ${gateway_ipv4_address}
+    nameservers:
+      addresses: [${gateway_ipv4_address}]
+%{ if domain != null ~}
+      search: [${domain}]
+%{ endif ~}

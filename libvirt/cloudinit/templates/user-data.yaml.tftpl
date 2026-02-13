@@ -1,0 +1,28 @@
+#cloud-config
+hostname: ${hostname}
+fqdn: ${fqdn}
+manage_etc_hosts: false
+
+# Manually create a K8s-friendly hosts file
+write_files:
+  - path: /etc/hosts
+    content: |
+      127.0.0.1 localhost
+      ${ipv4_address} ${fqdn} ${hostname}
+
+      # The following lines are desirable for IPv6 capable hosts
+      ::1 localhost ip6-localhost ip6-loopback
+      ff02::1 ip6-allnodes
+      ff02::2 ip6-allrouters
+
+users:
+  - name: ${user}
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    groups: users, admin
+    shell: /bin/bash
+    ssh_authorized_keys:
+      - ${ssh_public_key}
+
+%{ if extra_user_data != "" ~}
+${extra_user_data}
+%{ endif ~}
