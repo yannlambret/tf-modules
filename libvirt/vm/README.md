@@ -76,3 +76,4 @@ module "vm" {
 | Name | Description |
 |------|-------------|
 | `id` | The libvirt domain ID of the virtual machine. |
+| `host_ipv4_address` | The IPv4 address of the VM. Returns the statically configured address when `static_ip_address` is set, null for DHCP-assigned VMs. |
