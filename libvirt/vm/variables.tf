@@ -25,7 +25,7 @@ variable "vm" {
 
     # Static IPv4 address of the VM. When set, Terraform skips waiting for a
     # DHCP lease after boot.
-    static_ip_address = optional(string, null)
+    static_ipv4_address = optional(string, null)
 
     # Base disk image used as the copy-on-write backing store for the root disk.
     base_image = object({

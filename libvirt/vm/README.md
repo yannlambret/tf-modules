@@ -36,7 +36,7 @@ module "vm" {
 
 ### Static IP address
 
-When the VM is configured with a static IP (via cloud-init), set `static_ip_address` so that Terraform does not wait
+When the VM is configured with a static IP (via cloud-init), set `static_ipv4_address` so that Terraform does not wait
 for a DHCP lease:
 
 ```hcl
@@ -45,7 +45,7 @@ module "vm" {
 
   vm = {
     # ...
-    static_ip_address = "192.168.100.10"
+    static_ipv4_address = "192.168.100.10"
   }
 }
 ```
@@ -69,11 +69,11 @@ module "vm" {
 | `vm.network` | Name of the libvirt network to attach the VM to. | `string` | — | yes |
 | `vm.base_image.path` | Absolute path to the base image volume used as the CoW backing store. | `string` | — | yes |
 | `vm.base_image.format` | Format of the base image (e.g. `qcow2`). | `string` | — | yes |
-| `vm.static_ip_address` | Static IPv4 address of the VM. When set, Terraform will not wait for a DHCP lease after boot. | `string` | `null` | no |
+| `vm.static_ipv4_address` | Static IPv4 address of the VM. When set, Terraform will not wait for a DHCP lease after boot. | `string` | `null` | no |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
 | `id` | The libvirt domain ID of the virtual machine. |
-| `host_ipv4_address` | The IPv4 address of the VM. Returns the statically configured address when `static_ip_address` is set, null for DHCP-assigned VMs. |
+| `ipv4_address` | The IPv4 address of the VM. Returns the statically configured address when `static_ipv4_address` is set, null for DHCP-assigned VMs. |

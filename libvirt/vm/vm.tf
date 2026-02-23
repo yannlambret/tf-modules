@@ -115,8 +115,8 @@ resource "libvirt_domain" "vm" {
     ]
     interfaces = [
       {
-        # If static_ip_address is null, wait for a DHCP lease before reporting ready.
-        wait_for_lease = var.vm.static_ip_address == null
+        # If static_ipv4_address is null, wait for a DHCP lease before reporting ready.
+        wait_for_lease = var.vm.static_ipv4_address == null
         model = {
           type = "virtio"
         }
