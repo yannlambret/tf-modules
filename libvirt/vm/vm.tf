@@ -80,7 +80,8 @@ resource "libvirt_domain" "vm" {
         readonly = true
         source = {
           file = {
-            file = var.vm.cloudinit_path
+            file           = var.vm.cloudinit_path
+            startup_policy = "optional"
           }
         }
         target = {
