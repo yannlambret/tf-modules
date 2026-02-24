@@ -79,9 +79,9 @@ resource "libvirt_domain" "vm" {
         device   = "cdrom"
         readonly = true
         source = {
+          startup_policy = "optional"
           file = {
-            file           = var.vm.cloudinit_path
-            startup_policy = "optional"
+            file = var.vm.cloudinit_path
           }
         }
         target = {
