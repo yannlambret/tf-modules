@@ -38,12 +38,16 @@ resource "libvirt_network" "network" {
       for addr in var.network.dns_forwarders : { addr = addr }
     ]
 
-    host = [
-      for h in var.static_hosts : {
-        ip        = h.ip
+    host = concat(
+      [for h in var.static_hosts : {
+        ip        = h.ipv4
         hostnames = [{ hostname = h.hostname }]
-      }
-    ]
+      }],
+      [for h in var.static_hosts : {
+        ip        = h.ipv6
+        hostnames = [{ hostname = h.hostname }]
+      } if h.ipv6 != null]
+    )
   }
 
   ips = concat(

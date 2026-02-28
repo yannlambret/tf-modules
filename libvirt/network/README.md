@@ -35,9 +35,9 @@ module "network" {
   }
 
   static_hosts = [
-    { ip = "192.168.100.10", hostname = "node-1" },
-    { ip = "192.168.100.11", hostname = "node-2" },
-    { ip = "192.168.100.12", hostname = "node-3" },
+    { ipv4 = "192.168.100.10", hostname = "node-1" },
+    { ipv4 = "192.168.100.11", hostname = "node-2" },
+    { ipv4 = "192.168.100.12", hostname = "node-3" },
   ]
 }
 ```
@@ -58,6 +58,12 @@ module "network" {
     ipv6_cidr = "fd00:1::/64"
     domain    = "lab.local"
   }
+  
+  static_hosts = [
+    { ipv4 = "192.168.100.10", ipv6 = "fd00:1::a", hostname = "node-1" },
+    { ipv4 = "192.168.100.11", ipv6 = "fd00:1::b", hostname = "node-2" },
+    { ipv4 = "192.168.100.12", ipv6 = "fd00:1::c", hostname = "node-3" },
+  ]
 }
 ```
 
@@ -119,7 +125,7 @@ module "network" {
 | `network.dhcp_count`     | Number of addresses in the DHCP range. Used only when `dhcp_end` is null. | `number` | `50` | no |
 | `network.dns_forwarders` | List of upstream DNS forwarder addresses. | `list(string)` | `["1.1.1.1"]` | no |
 | `network.ipv6_cidr`      | IPv6 CIDR block for the network (e.g. `fd00:1::/64`). When set, libvirt configures an IPv6 gateway on the bridge. The first address (`::1`) is assigned as the gateway. | `string` | `null` | no |
-| `static_hosts`           | List of hosts statically registered in the network's DNS resolver. | `list(object({ ip = string, hostname = string }))` | `[]` | no |
+| `static_hosts`           | List of hosts statically registered in the network's DNS resolver. Each entry creates an A record; adding `ipv6` also creates a AAAA record for the same hostname. | `list(object({ ip = string, ipv6 = optional(string), hostname = string }))` | `[]` | no |
 
 ## Outputs
 

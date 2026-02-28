@@ -48,7 +48,8 @@ variable "static_hosts" {
   description = "List of hosts statically registered in the network's DNS resolver."
 
   type = list(object({
-    ip       = string
+    ipv4     = string
+    ipv6     = optional(string, null)
     hostname = string
   }))
   default = []
