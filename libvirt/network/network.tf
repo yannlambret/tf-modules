@@ -1,14 +1,20 @@
 locals {
-  netmask              = cidrnetmask(var.network.cidr)
-  gateway_ipv4_address = cidrhost(var.network.cidr, 1)
+  netmask              = cidrnetmask(var.network.ipv4_cidr)
+  gateway_ipv4_address = cidrhost(var.network.ipv4_cidr, 1)
+  gateway_ipv6_address = var.network.ipv6_cidr != null ? cidrhost(var.network.ipv6_cidr, 1) : null
 
   # Use the variable if provided, otherwise calculate from offset
-  dhcp_start = coalesce(var.network.dhcp_start, cidrhost(var.network.cidr, var.network.dhcp_offset))
-  dhcp_end   = coalesce(var.network.dhcp_end, cidrhost(var.network.cidr, var.network.dhcp_offset + var.network.dhcp_count))
+  dhcp_start = coalesce(var.network.dhcp_start, cidrhost(var.network.ipv4_cidr, var.network.dhcp_offset))
+  dhcp_end   = coalesce(var.network.dhcp_end, cidrhost(var.network.ipv4_cidr, var.network.dhcp_offset + var.network.dhcp_count))
 
-  # NAT always covers the full usable range
-  nat_start = cidrhost(var.network.cidr, 2)
-  nat_end   = cidrhost(var.network.cidr, -2)
+  # IPv6 setup
+  ipv6_ips = var.network.ipv6_cidr != null ? [
+    {
+      family  = "ipv6"
+      address = local.gateway_ipv6_address
+      prefix  = tonumber(split("/", var.network.ipv6_cidr)[1])
+    },
+  ] : []
 }
 
 resource "libvirt_network" "network" {
@@ -40,31 +46,22 @@ resource "libvirt_network" "network" {
     ]
   }
 
-  ips = [
-    {
-      address = local.gateway_ipv4_address
-      netmask = local.netmask
+  ips = concat(
+    [
+      {
+        address = local.gateway_ipv4_address
+        netmask = local.netmask
 
-      dhcp = {
-        enabled = true
-        ranges = [
-          {
-            start = local.dhcp_start
-            end   = local.dhcp_end
-          },
-        ]
-      }
-    },
-  ]
+        dhcp = {
+          enabled = true
+          ranges  = [{ start = local.dhcp_start, end = local.dhcp_end }]
+        }
+      },
+    ],
+    local.ipv6_ips
+  )
 
   forward = {
-    nat = {
-      addresses = [
-        {
-          start = local.nat_start
-          end   = local.nat_end
-        },
-      ]
-    }
+    nat = {}
   }
 }

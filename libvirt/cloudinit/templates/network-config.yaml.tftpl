@@ -4,11 +4,22 @@ ethernets:
     match:
       name: "e*"
     dhcp4: false
+%{ if ipv6_address != null ~}
+    dhcp6: false
+    accept-ra: false
+%{ endif ~}
     addresses:
-      - ${ipv4_address}/${cidr_prefix}
+      - ${ipv4_address}/${ipv4_cidr_prefix}
+%{ if ipv6_address != null ~}
+      - ${ipv6_address}/${ipv6_cidr_prefix}
+%{ endif ~}
     routes:
       - to: default
         via: ${gateway_ipv4_address}
+%{ if ipv6_address != null ~}
+      - to: "::/0"
+        via: ${gateway_ipv6_address}
+%{ endif ~}
     nameservers:
       addresses: [${gateway_ipv4_address}]
 %{ if domain != null ~}

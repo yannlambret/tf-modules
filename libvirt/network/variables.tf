@@ -11,10 +11,6 @@ variable "network" {
     # Name of the Linux bridge interface created for this network.
     bridge = string
 
-    # CIDR block for the network (e.g. "192.168.100.0/24").
-    # The first usable address (.1) is assigned to the bridge as the gateway.
-    cidr = string
-
     # DNS search domain for the network. Resolved locally by dnsmasq.
     domain = string
 
@@ -36,6 +32,15 @@ variable "network" {
 
     # List of upstream DNS forwarder addresses.
     dns_forwarders = optional(list(string), ["1.1.1.1"])
+
+    # CIDR block for the network (e.g. "192.168.100.0/24").
+    # The first usable address (.1) is assigned to the bridge as the gateway.
+    ipv4_cidr = string
+
+    # IPv6 CIDR block for the network (e.g. "fd00:1::/64").
+    # When set, libvirt configures an IPv6 gateway on the bridge.
+    # The first address in the range (.::1) is assigned as the gateway.
+    ipv6_cidr = optional(string, null)
   })
 }
 
