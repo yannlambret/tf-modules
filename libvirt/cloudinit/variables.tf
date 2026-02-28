@@ -10,13 +10,26 @@ variable "cloudinit" {
 
     # CIDR block of the VM's network (e.g. "192.168.100.0/24").
     # Used to derive the prefix length for the static network configuration.
-    network_cidr = string
+    ipv4_network_cidr = string
 
     # Static IPv4 address assigned to the VM.
     ipv4_address = string
 
     # IPv4 address of the default gateway.
     gateway_ipv4_address = string
+
+    # IPv6 CIDR block of the VM's network (e.g. "fd00:1::/64").
+    # Used to derive the prefix length for the static IPv6 configuration.
+    # Must be set together with ipv6_address and gateway_ipv6_address.
+    ipv6_network_cidr = optional(string, null)
+
+    # Static IPv6 address assigned to the VM.
+    # Must be set together with ipv6_network_cidr and gateway_ipv6_address.
+    ipv6_address = optional(string, null)
+
+    # IPv6 address of the default gateway.
+    # Must be set together with ipv6_network_cidr and ipv6_address.
+    gateway_ipv6_address = optional(string, null)
 
     # Name of the OS user created on first boot.
     user = string

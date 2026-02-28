@@ -1,6 +1,7 @@
 locals {
-  # Extract network prefix from the CIDR notation 
-  cidr_prefix = split("/", var.cloudinit.network_cidr)[1]
+  # Extract network prefix from the CIDR notation
+  ipv4_cidr_prefix = split("/", var.cloudinit.ipv4_network_cidr)[1]
+  ipv6_cidr_prefix = var.cloudinit.ipv6_network_cidr != null ? split("/", var.cloudinit.ipv6_network_cidr)[1] : null
 
   # Compute the fully qualified domain name
   fqdn = var.cloudinit.domain != null ? "${var.cloudinit.hostname}.${var.cloudinit.domain}" : var.cloudinit.hostname
@@ -8,9 +9,12 @@ locals {
   # Template rendering
   network_config = templatefile("${path.module}/templates/network-config.yaml.tftpl", {
     domain               = var.cloudinit.domain
+    ipv4_cidr_prefix     = local.ipv4_cidr_prefix
     ipv4_address         = var.cloudinit.ipv4_address
     gateway_ipv4_address = var.cloudinit.gateway_ipv4_address
-    cidr_prefix          = local.cidr_prefix
+    ipv6_cidr_prefix     = local.ipv6_cidr_prefix
+    ipv6_address         = var.cloudinit.ipv6_address
+    gateway_ipv6_address = var.cloudinit.gateway_ipv6_address
   })
 
   meta_data = templatefile("${path.module}/templates/meta-data.yaml.tftpl", {
