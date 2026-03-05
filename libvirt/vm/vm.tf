@@ -76,17 +76,16 @@ resource "libvirt_domain" "vm" {
 
     disks = [
       {
-        device   = "cdrom"
+        device   = "disk"
         readonly = true
         source = {
-          startup_policy = "optional"
           file = {
             file = var.vm.cloudinit_path
           }
         }
         target = {
-          dev = "sda"
-          bus = "sata"
+          dev = "vdb"
+          bus = "virtio"
         }
       },
       {

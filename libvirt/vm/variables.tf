@@ -17,7 +17,7 @@ variable "vm" {
     # Size of the root disk, in GiB.
     disk_capacity = number
 
-    # Absolute path to the cloud-init ISO.
+    # Absolute path to the cloud-init volume in the storage pool.
     cloudinit_path = string
 
     # Name of the libvirt network to attach the VM to.

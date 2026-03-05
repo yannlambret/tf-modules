@@ -1,8 +1,8 @@
 # vm
 
 Creates a KVM virtual machine using UEFI/OVMF firmware on a Q35 machine type. The VM boots from a copy-on-write root
-disk backed by a base image, with a cloud-init ISO mounted as a CDROM for first-boot configuration. A VNC console and a
-serial PTY are always configured for out-of-band access.
+disk backed by a base image, with a cloud-init volume attached as a VirtIO disk for first-boot configuration. A VNC
+console and a serial PTY are always configured for out-of-band access.
 
 UEFI firmware is resolved automatically by libvirt using the host's firmware descriptor files
 (`/usr/share/qemu/firmware/*.json`), so no distribution-specific paths need to be configured.
@@ -23,7 +23,7 @@ module "vm" {
     memory         = 2048 # MiB
     disk_capacity  = 20   # GiB
     pool           = module.storage.name
-    cloudinit_path = module.cloudinit.path
+    cloudinit_path = module.cloudinit.volume_path
     network        = module.network.name
 
     base_image = {
@@ -65,7 +65,7 @@ module "vm" {
 | `vm.vcpu` | Number of virtual CPUs. | `number` | — | yes |
 | `vm.pool` | Storage pool in which the root disk volume is created. | `string` | — | yes |
 | `vm.disk_capacity` | Size of the root disk in GiB. | `number` | — | yes |
-| `vm.cloudinit_path` | Absolute path to the cloud-init ISO disk. Typically sourced from the `cloudinit` module output. | `string` | — | yes |
+| `vm.cloudinit_path` | Absolute path to the cloud-init volume in the storage pool. Typically sourced from the `cloudinit` module `volume_path` output. | `string` | — | yes |
 | `vm.network` | Name of the libvirt network to attach the VM to. | `string` | — | yes |
 | `vm.base_image.path` | Absolute path to the base image volume used as the CoW backing store. | `string` | — | yes |
 | `vm.base_image.format` | Format of the base image (e.g. `qcow2`). | `string` | — | yes |

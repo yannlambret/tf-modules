@@ -38,13 +38,13 @@ module "cloudinit" {
     name                 = "node-1"
     hostname             = "node-1"
     pool                 = "default"
+    domain               = module.network.domain
     ipv4_network_cidr    = module.network.ipv4_cidr
-    ipv4_address         = "192.168.100.10"
     gateway_ipv4_address = module.network.gateway_ipv4_address
+    ipv4_address         = "192.168.100.10"
     ipv6_network_cidr    = module.network.ipv6_cidr
-    ipv6_address         = "fd00:1::10"
     gateway_ipv6_address = module.network.gateway_ipv6_address
-    domain               = "lab.local"
+    ipv6_address         = "fd00:1::10"
     user                 = "ubuntu"
     ssh_public_key       = file("~/.ssh/id_ed25519.pub")
   }
@@ -100,5 +100,4 @@ module "cloudinit" {
 
 | Name | Description |
 |------|-------------|
-| `name` | The name of the cloud-init disk. |
-| `path` | The absolute path to the cloud-init ISO in the storage pool. |
+| `volume_path` | The absolute path to the cloud-init volume in the storage pool. Pass this to the `vm` module as `cloudinit_path`. |
